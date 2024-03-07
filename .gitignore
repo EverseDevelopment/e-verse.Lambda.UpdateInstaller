@@ -1,0 +1,120 @@
+# Byte-compiled / optimized / DLL files
+*.com
+*.dll
+*.exe
+*.o
+*.obj
+*.pdb
+*.so
+*.user
+*.userprefs
+*.ilk
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+*.dbmdl
+*.mdf
+*.ldf
+*.opendb
+*.db
+*.jfm
+*.tlog
+*.ipch
+*.obj
+*.pch
+*.pdb
+*.idb
+*.res
+*.suo
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Project & Build directories
+bin/
+obj/
+TestResults/
+Debug*/
+Release*/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# NuGet Packages
+*.nupkg
+packages/*
+!packages/build/
+*.nuget.targets
+*.nuget.props
+
+# ReSharper & Rider
+_ReSharper*/
+*.resharper
+*.DotSettings.user
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.orig
+*.pidb
+*.dbmdl
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Tye
+.tye/
+
+# Visual Studio Code
+.vscode/
+.vs/
+
+# Serverless directories
+.serverless/
+.webpack/
+
+# AWS SAM directories
+.aws-sam/
+
+# Temp files
+*.tmp
+*.bak
+*.$$$
+*~
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+**/aws-lambda-tools-defaults.json
