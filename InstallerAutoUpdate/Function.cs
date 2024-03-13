@@ -1,5 +1,6 @@
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
+using System.Text.RegularExpressions;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -22,35 +23,37 @@ public class Function
         };
 
         request.QueryStringParameters.TryGetValue("inputVersion", out string inputVersionString);
-        request.QueryStringParameters.TryGetValue("bucketName", out string bucketName);
         request.QueryStringParameters.TryGetValue("folderName", out string folderName);
 
         var accessKeyId = System.Environment.GetEnvironmentVariable("AWSKey");
+        var bucketName = System.Environment.GetEnvironmentVariable("InstallerBucket");
         var secretAccessKey = System.Environment.GetEnvironmentVariable("AWSSecret");
         string regionAws = System.Environment.GetEnvironmentVariable("region");
 
+        var s3Helper = new S3Helper(bucketName, folderName, accessKeyId, secretAccessKey, regionAws);
+        var latestFile = s3Helper.GetLatestFileVersionAsync().GetAwaiter().GetResult();
+
         if (request.Path == "/CurrentVersion")
         {
-            
-            var s3Helper = new S3Helper(bucketName, folderName, accessKeyId, secretAccessKey, regionAws);
-            var latestFileKey = s3Helper.GetLatestFileVersionAsync().GetAwaiter().GetResult();
+            string numberNoCharacters = Regex.Replace(inputVersionString, "[^0-9]", "");
+            int.TryParse(numberNoCharacters, out int currentVersion);
 
-            int.TryParse(inputVersionString, out int currentVersion);
-
-            if (currentVersion > latestFileKey)
+            if (currentVersion >= latestFile.NumberVersion)
             {
+                latestFile.Update = true;
                 response.StatusCode = 200;
-                response.Body = "true";
+                response.Body = System.Text.Json.JsonSerializer.Serialize(latestFile);
             }
             else
             {
+                latestFile.Update = false;
                 response.StatusCode = 200;
-                response.Body = "false";
+                response.Body = System.Text.Json.JsonSerializer.Serialize(latestFile); ;
             }   
         }
         else if (request.Path == "/LatestInstaller")
         {
-            var s3LatestFile = new S3LatestFile(bucketName, folderName, accessKeyId, secretAccessKey, regionAws);
+            var s3LatestFile = new S3LatestFile(latestFile.Key, bucketName, folderName, accessKeyId, secretAccessKey, regionAws);
             var latestFileSignedUrl = s3LatestFile.GetLatestFileSignedUrl().GetAwaiter().GetResult();
 
             response.StatusCode = 200;
