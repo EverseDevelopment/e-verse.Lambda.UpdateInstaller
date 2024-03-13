@@ -45,7 +45,7 @@ public class S3Helper
             Version = ExtractVersionFromFileName(file.Key),
             NumberVersion = ConverVersionToNumbers(ExtractVersionFromFileName(file.Key))
         })
-        .OrderByDescending(file => file.Version)
+        .OrderByDescending(file => file.NumberVersion)
         .FirstOrDefault();
 
         return latestFile;
@@ -60,9 +60,9 @@ public class S3Helper
 
         fileName = fileName.Substring(_folderPath.Length);
         string nameNoPath = Path.GetFileNameWithoutExtension(fileName);
+        string output = Regex.Replace(nameNoPath, "[^0-9.]", "");
 
-
-        return nameNoPath;
+        return output;
     }
 
     private int ConverVersionToNumbers(string versionNumber)
