@@ -38,7 +38,9 @@ public class Function
             string numberNoCharacters = Regex.Replace(inputVersionString, "[^0-9]", "");
             int.TryParse(numberNoCharacters, out int currentVersion);
 
-            if (currentVersion >= latestFile.NumberVersion)
+            int comparisson = S3Helper.CompareVersions(inputVersionString, latestFile.Version);
+
+            if (comparisson == 0 || comparisson == 1)
             {
                 latestFile.Update = true;
                 response.StatusCode = 200;

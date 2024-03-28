@@ -39,13 +39,16 @@ public class S3Helper
         }
         while (response.IsTruncated);
 
+
+
+
         var latestFile = files.Select(file => new InstallerAutoUpdate.FileInfo
         {
             Key = file.Key,
             Version = ExtractVersionFromFileName(file.Key),
             NumberVersion = ConverVersionToNumbers(ExtractVersionFromFileName(file.Key))
         })
-        .OrderByDescending(file => file.NumberVersion)
+        .OrderByDescending(o => o.Version, Comparer<string>.Create(CompareVersions))
         .FirstOrDefault();
 
         return latestFile;
@@ -63,6 +66,22 @@ public class S3Helper
         string output = Regex.Replace(nameNoPath, "[^0-9.]", "");
 
         return output;
+    }
+
+    public static int CompareVersions(string version1, string version2)
+    {
+        var v1 = version1.Split('.');
+        var v2 = version2.Split('.');
+        int length = Math.Max(v1.Length, v2.Length);
+        for (int i = 0; i < length; i++)
+        {
+            int num1 = i < v1.Length ? int.Parse(v1[i]) : 0;
+            int num2 = i < v2.Length ? int.Parse(v2[i]) : 0;
+
+            if (num1 > num2) return 1;
+            if (num1 < num2) return -1;
+        }
+        return 0; // The versions are equal
     }
 
     private int ConverVersionToNumbers(string versionNumber)
